@@ -32,9 +32,6 @@ let bord = {
             this.speed += this.gravity 
             this.y += this.speed
         }
-
-        
-        
     },
     jump: function() {
         this.speed = -7.0
@@ -67,10 +64,10 @@ let warps = {
         }
     },
     update: function() {
-        if(frames % 200 == 0) {
+        if(frames % 150 == 0) {
             this.position.push({
                 x: canvas.width,
-                y: this.maxY 
+                y: this.maxY * (Math.random() + 1)
             })
         }
         for(let i = 0; i < this.position.length; i++) {
