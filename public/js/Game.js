@@ -71,7 +71,7 @@ let warps = {
 }
 
 // Event listener
-document.addEventListener("keyup", action)
+document.addEventListener("keydown", action)
 
 function action(e) {
     switch(e.keyCode) {
