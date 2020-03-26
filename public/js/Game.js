@@ -23,12 +23,26 @@ let bord = {
         ctx.fill()
         ctx.closePath()
     },
+
+    // increases speed of the bird downwards
     update: function() {
-        this.speed += this.gravity 
-        this.y += this.speed
+        if(this.y > canvas.height - 25){
+            this.resetSpeed()
+        }else{
+            this.speed += this.gravity 
+            this.y += this.speed
+        }
+
+        
+        
     },
     jump: function() {
         this.speed = -7.0
+    },
+
+    resetSpeed: function(){
+        this.y = canvas.height - 25
+        this.speed = 0
     }
 }
 
