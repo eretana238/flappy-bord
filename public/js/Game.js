@@ -40,12 +40,15 @@ let bord = {
         this.speed = -7.0
     },
 
+
     resetSpeed: function(){
         this.y = canvas.height - 25
         this.speed = 0
     }
 }
 
+
+//Rectangles
 let warps = {
     position: [],
     gap: 150,
