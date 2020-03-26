@@ -9,68 +9,88 @@ canvas.height = window.innerHeight
 // Frames
 let frames = 0
 
-// Event listener
-canvas.addEventListener("click", () =>{
-    bord.jump()
-})
-// canvas.onkeyup = function(e) {
-//     if(e.keyCode == 32) {
-//         bord.jump()
-//     }
-// }
-
 // Objects
 let bord = {
     x: 50,
-    y: 50,
+    y: 150,
     r: 20,
-    gravity: 0.25,
+    gravity: 0.3,
     speed: 0,
     draw: function() {
-        ctx.save()
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
         ctx.fillStyle = "#fff"
-        ctx.ellipse(this.x, this.y, this.r, this.r, 0, 0, 2 * Math.PI)
         ctx.fill()
-        ctx.restore()
+        ctx.closePath()
     },
     update: function() {
         this.speed += this.gravity 
         this.y += this.speed
     },
     jump: function() {
-        this.speed -= 4.5
+        this.speed = -7.0
     }
 }
 
-let warp = {
-    gap: 130,
-    x: 100,
-    y: 0,
-    h: 400,
+let warps = {
+    position: [],
+    gap: 150,
+    maxY: -300,
+    h: 500,
     w: 50,
+    dx: 2,
     draw: function() {
-        ctx.fillStyle = "#fff"
-        ctx.fillRect(this.x, this.y, this.w, this.h)
+        for(let i = 0; i < this.position.length; i++) {
+            let p = this.position[i]
 
-        ctx.fillStyle = "#fff"
-        ctx.fillRect(this.x, this.y + this.h + this.gap, this.w, this.h)
+            // Top pipe
+            ctx.fillStyle = "#fff"
+            ctx.fillRect(p.x, p.y, this.w, this.h)
 
+            // Bottom pipe
+            ctx.fillStyle = "#fff"
+            ctx.fillRect(p.x, p.y + this.h + this.gap, this.w, this.h)
+        }
     },
     update: function() {
+        if(frames % 200 == 0) {
+            this.position.push({
+                x: canvas.width,
+                y: this.maxY 
+            })
+        }
+        for(let i = 0; i < this.position.length; i++) {
+            let p = this.position[i]
 
+            p.x -= this.dx
+            if(p.x + this.w <= 0) {
+                this.position.shift()
+            }
+        }
+    }
+}
+
+// Event listener
+document.addEventListener("keyup", action)
+
+function action(e) {
+    switch(e.keyCode) {
+        case 32:
+            bord.jump()
+            break
     }
 }
 
 function update() {
     bord.update()
+    warps.update()
 }
 
 function draw() {
-    ctx.fillStyle = "#333"
-    ctx.fillRect(0,0,canvas.width, canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     bord.draw()
-    warp.draw()
+    warps.draw()
 }
 
 function loop() {

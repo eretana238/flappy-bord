@@ -11,3 +11,6 @@ h1{
     left: 50%;
     transform: translateX(-50%);
 }
+canvas{
+    background-color: #333;
+}
