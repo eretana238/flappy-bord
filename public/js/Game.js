@@ -16,12 +16,12 @@ let gameState = 1                           /* 0 == endgame, 1 == running, 2 == 
 let bord = {
     x: 50,
     y: canvas.height/2,
-    r: 20,
-    gravity: 0.3,
+    r: 21,
+    gravity: 0.4,
     speed: 0,
     draw: function() {
         ctx.beginPath()
-        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
+        ctx.arc(this.x, this.y, this.r-1, 0, 2 * Math.PI)
         ctx.fillStyle = "#fff"
         ctx.fill()
         ctx.closePath()
@@ -36,7 +36,7 @@ let bord = {
         }
     },
     jump: function() {
-        this.speed = -7.0
+        this.speed = -8.0
     }
 }
 
@@ -79,6 +79,33 @@ let warps = {
     }
 }
 
+let score = {
+    number: 0,
+    trigger: false,                         // tells the score when to start counting
+    draw: function() {
+        ctx.fillStyle = "#999";
+        ctx.font = "30px Sans Serif";
+        ctx.textAlign = "center";
+        ctx.fillText(this.number,canvas.width/2, "30");
+    },
+    update: function() {
+        // find first pipe in front of bord
+        if(!this.trigger && bord.x > warps.position[0].x + warps.w) {
+            this.trigger = true
+            this.number++
+        }
+        else if(this.trigger) {
+            if(frames % 100 == 0) this.number++
+        }
+
+    }
+}
+
+// screens
+let gameOver = document.querySelector('.gameover-screen')
+
+let gamePause = document.querySelector('.gamepause-screen')
+
 // Event listener
 document.addEventListener("keydown", action)
 
@@ -98,14 +125,21 @@ function action(e) {
 
                 // Reset warps
                 warps.position = []
+
+                // remove game over screen
+                gameOver.style.display = "none"
             }
             break
         case 27:                            /* escape (pause) */
             // Toggle states
-            if(gameState == 1)
+            if(gameState == 1) {
                 gameState = 2
-            else if(gameState == 2)
+                gamePause.style.display = "block"
+            }
+            else if(gameState == 2) {
                 gameState = 1
+                gamePause.style.display = "none"
+            }
     }
 }
 
@@ -125,6 +159,7 @@ function hasCollided() {
 function update() {
     bord.update()
     warps.update()
+    score.update()
 }
 
 function draw() {
@@ -132,15 +167,23 @@ function draw() {
 
     bord.draw()
     warps.draw()
+    score.draw()
 }
 
 function loop() {
+    if(gameState == 0) {
+        gameOver.style.display = "block"
+        score.number = 0
+        score.trigger = false
+    }
+
     if(gameState == 1) {
         update()
         draw()
         frames++
         if(hasCollided())
             gameState = 0
+        
     }
     requestAnimationFrame(loop)
 }
