@@ -12,6 +12,18 @@ let frames = 0
 // States
 let gameState = 1                           /* 0 == endgame, 1 == running, 2 == pause */
 
+// Sound FX
+let diedFX = document.querySelector(".died-fx")
+
+let jumpFX = document.querySelector(".jump-fx")
+
+let passFX = document.querySelector(".pass-fx")
+
+let themeSong = document.querySelector(".theme")
+themeSong.volume = "0.3"
+themeSong.autoplay = true
+themeSong.loop = true
+themeSong.play()
 // Objects
 let bord = {
     x: 50,
@@ -28,15 +40,18 @@ let bord = {
     },
     // increases speed of the bird downwards
     update: function() {
-        if(this.y > canvas.height - this.r) {
-            gameState = 0
-        }else{
-            this.speed += this.gravity 
-            this.y += this.speed
-        }
+        this.speed += this.gravity 
+        this.y += this.speed
     },
     jump: function() {
         this.speed = -8.0
+        jumpFX.load()
+        jumpFX.play()
+    },
+    die: function() {
+        diedFX.load()
+        diedFX.play()
+        gameState = 0
     }
 }
 
@@ -112,7 +127,8 @@ document.addEventListener("keydown", action)
 function action(e) {
     switch(e.keyCode) {
         case 32:                            /* space bar = bord jump*/
-            bord.jump()  
+            if(gameState == 1)
+                bord.jump()  
             break
         case 13:                            /* enter = restart game*/
             if(gameState == 0) {
@@ -135,10 +151,12 @@ function action(e) {
             if(gameState == 1) {
                 gameState = 2
                 gamePause.style.display = "block"
+                themeSong.volume = "0.1"
             }
             else if(gameState == 2) {
                 gameState = 1
                 gamePause.style.display = "none"
+                themeSong.volume = "0.3"
             }
     }
 }
@@ -153,6 +171,8 @@ function hasCollided() {
         if(bord.x + bord.r >= p.x && bord.x - bord.r <= p.x && (bord.y < p.y + warps.h || bord.y > p.y + warps.h + warps.gap))
             return true
 
+        if(bord.y + bord.r > canvas.height) 
+            return true
     }
 }
 
@@ -182,7 +202,7 @@ function loop() {
         draw()
         frames++
         if(hasCollided())
-            gameState = 0
+            bord.die()
         
     }
     requestAnimationFrame(loop)
