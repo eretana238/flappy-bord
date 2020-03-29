@@ -16,13 +16,14 @@ let gameState = 1                           /* 0 == endgame, 1 == running, 2 == 
 let diedFX = document.querySelector(".died-fx")
 
 let jumpFX = document.querySelector(".jump-fx")
+jumpFX.load()
 
 let passFX = document.querySelector(".pass-fx")
+passFX.volume = "0.4"
 
 let themeSong = document.querySelector(".theme")
+themeSong.load()
 themeSong.volume = "0.3"
-themeSong.autoplay = true
-themeSong.loop = true
 themeSong.play()
 // Objects
 let bord = {
@@ -57,10 +58,10 @@ let bord = {
 
 let warps = {
     position: [],
-    gap: 120,
-    maxY: -380,
+    gap: 124,
+    maxY: -420,
     minY: 0,
-    h: 500,
+    h: 600,
     w: 50,
     dx: 3,
     draw: function() {
@@ -108,9 +109,15 @@ let score = {
         if(!this.trigger && bord.x > warps.position[0].x + warps.w) {
             this.trigger = true
             this.number++
+            passFX.load()
+            passFX.play()
         }
         else if(this.trigger) {
-            if(frames % 100 == 0) this.number++
+            if(frames % 100 == 0) {
+                this.number++
+                passFX.load()
+                passFX.play()
+            }
         }
 
     }
