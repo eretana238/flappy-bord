@@ -10,8 +10,13 @@ canvas.height = window.innerHeight
 let frames = 0
 
 // States
-let gameState = 1                           /* 0 == endgame, 1 == running, 2 == pause */
+let gameState = 4                           /* 0 == endgame, 1 == running, 2 == pause */
 
+// Buttons
+document.querySelector(".play-btn").onclick = function(){
+    gameState = 1
+    document.getElementById("main-menu").style.display = "none"
+}
 // Sound FX
 let diedFX = document.querySelector(".died-fx")
 
@@ -25,6 +30,7 @@ let themeSong = document.querySelector(".theme")
 themeSong.load()
 themeSong.volume = "0.3"
 themeSong.play()
+
 // Objects
 let bord = {
     x: 50,
@@ -204,7 +210,7 @@ function loop() {
         score.trigger = false
     }
 
-    if(gameState == 1) {
+    else if(gameState == 1) {
         update()
         draw()
         frames++
@@ -212,6 +218,7 @@ function loop() {
             bord.die()
         
     }
+
     requestAnimationFrame(loop)
 }
 
