@@ -12,11 +12,6 @@ let frames = 0
 // States
 let gameState = 4                           /* 0 == endgame, 1 == running, 2 == pause */
 
-// Buttons
-document.querySelector(".play-btn").onclick = function(){
-    gameState = 1
-    document.getElementById("main-menu").style.display = "none"
-}
 // Sound FX
 let diedFX = document.querySelector(".died-fx")
 
@@ -29,7 +24,14 @@ passFX.volume = "0.4"
 let themeSong = document.querySelector(".theme")
 themeSong.load()
 themeSong.volume = "0.3"
-themeSong.play()
+themeSong.loop = true
+
+// Buttons & start game
+document.querySelector(".play-btn").onclick = function(){
+    gameState = 1
+    document.getElementById("main-menu").style.display = "none"
+    themeSong.play()
+}
 
 // Objects
 let bord = {
